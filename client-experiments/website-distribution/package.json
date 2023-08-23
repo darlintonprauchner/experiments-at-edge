@@ -1,0 +1,13 @@
+{
+  "name": "client-experiments-website-distribution",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "sls deploy"
+  },
+  "author": "Darlinton Prauchner",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^3.34.0",
+    "serverless-s3-deploy": "^0.10.1"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "client-experiments-lambda-at-edge",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "sls deploy"
+  },
+  "author": "Darlinton Prauchner",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-lambda": "^1.0.7",
+    "serverless": "^3.34.0",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-lambda-edge-pre-existing-cloudfront": "^1.2.0",
+    "serverless-webpack": "^5.13.0",
+    "ts-loader": "^9.4.4",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "@launchdarkly/node-server-sdk": "^8.2.1",
+    "uuid": "^9.0.0"
+  }
+}

@@ -1,0 +1,63 @@
+service: client-experiments-website-distribution
+
+plugins:
+  - serverless-s3-deploy
+
+custom:
+  bucketName: ${self:service}-s3-bucket
+  assets:
+    auto: true
+    verbose: true
+    targets:
+      - bucket: ${self:custom.bucketName}
+        acl: public-read
+        files:
+          - source: pages/
+            globs: "*"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+resources:
+  Resources:
+    WebsiteBucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+          BucketName: ${self:custom.bucketName}
+          PublicAccessBlockConfiguration:
+            BlockPublicAcls: false
+          OwnershipControls:
+            Rules:
+              - ObjectOwnership: ObjectWriter
+          WebsiteConfiguration:
+              IndexDocument: "index.html"
+              ErrorDocument: "error.html"
+    WebsiteDistribution:
+        Type: "AWS::CloudFront::Distribution"
+        Properties:
+          DistributionConfig:
+              DefaultCacheBehavior:
+                TargetOriginId: "WebsiteBucketOrigin"
+                ViewerProtocolPolicy: "redirect-to-https"
+                DefaultTTL: 0 ## For demo purposes, no cache
+                MaxTTL: 0 ## For demo purposes, no cache
+                Compress: true
+                ForwardedValues:
+                    QueryString: true
+                    Cookies:
+                      Forward: "all"
+                    Headers:
+                      - header-exp-edge
+              DefaultRootObject: "index.html"
+              Enabled: true
+              PriceClass: "PriceClass_100"
+              HttpVersion: "http2"
+              ViewerCertificate:
+                CloudFrontDefaultCertificate: true
+              Origins:
+                -
+                    Id: "WebsiteBucketOrigin"
+                    DomainName: { "Fn::GetAtt": [ "WebsiteBucket", "DomainName" ] }
+                    S3OriginConfig: {}
