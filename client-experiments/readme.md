@@ -53,7 +53,7 @@ open src/viewerRequest.ts
 
 Search for `YOUR_LAUNCH_DARKLY_API_KEY_GOES_HERE`, and replace by `LaunchDarkly SDK Key`, [found on LaunchDarkly Account Settings page](https://app.launchdarkly.com/settings/projects/default/environments).
 
-### 7 Create your feature flag
+### 7. Create your feature flag
 
 Create a feature flag named `id-experiments-at-edge`, configure it to serve `a percentage rollout` by `user` `key`.
 
