@@ -1,0 +1,44 @@
+service: server-exp-lambda-url-distribution
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+functions:
+  displayMessage:
+    handler: src/displayMessage.handler
+    url: true
+
+resources:
+  Resources:
+    LambdaDistribution:
+        Type: "AWS::CloudFront::Distribution"
+        Properties:
+          DistributionConfig:
+              Enabled: true
+              DefaultCacheBehavior:
+                AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+                CachedMethods: ["GET", "HEAD", "OPTIONS"]
+                ForwardedValues:
+                  Headers:
+                    - Access-Control-Request-Headers
+                    - Access-Control-Request-Method
+                    - Origin
+                    - Authorization
+                  QueryString: true
+                TargetOriginId: LambdaOrigin
+                ViewerProtocolPolicy: https-only
+                Compress: true
+                DefaultTTL: 0
+              PriceClass: "PriceClass_100"
+              HttpVersion: "http2"
+              ViewerCertificate:
+                CloudFrontDefaultCertificate: true
+              Origins:
+                - Id: "LambdaOrigin"
+                  DomainName: !Select [2, !Split ["/", !GetAtt DisplayMessageLambdaFunctionUrl.FunctionUrl]]
+                  CustomOriginConfig:
+                    HTTPPort: 80 
+                    HTTPSPort: 443 
+                    OriginProtocolPolicy: 'https-only'

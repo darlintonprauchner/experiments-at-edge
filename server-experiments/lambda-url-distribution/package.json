@@ -1,0 +1,12 @@
+{
+  "name": "server-exp-lambda-url-distribution",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "sls deploy"
+  },
+  "author": "Darlinton Prauchner",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^3.34.0"
+  }
+}
