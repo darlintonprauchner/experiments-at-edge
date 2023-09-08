@@ -11,7 +11,7 @@
 
 ## What are we achieving
 
-We will demo how different variations of content can be distributed using AWS Native solutions. 
+We will demo how different variations of content can be distributed using AWS Native solutions. We'll also see how experiments can be executed at the edge.
 
 More specifically, With CloudFront and Lambda@Edge, we should have an optimal CDN solution, providing completelly different content based on a customer session unique identifier.
 

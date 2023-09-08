@@ -4,7 +4,7 @@
  - AWS Account
  - LaunchDarkly account (with Experiments enabled)
 
-## Client A/B testing
+## Server A/B testing
 
 ### 1. Tell me your secrets
 
@@ -23,35 +23,18 @@ Using the IDE of your choice, let's do some smart "search and replace".
 | Search For                  	| Replace By                       	|
 |-----------------------------	|----------------------------------	|
 | LD_SERVER_SDK_KEY_GOES_HERE 	| Your LaunchDarkly SDK Key        	|
-| LD_CLIENT_SIDE_ID_GOES_HERE 	| Your LaunchDarkly Client-side ID 	|
 
-### 2 Configure your Experiments
+### 2 Create a few feature flags
 
-1. Crete a feature flag named `id-experiments-at-edge-client-side`
- * Flag Variations: String
- * Variation 1: Control
- * Variation 2: A
- * Variation 3: B
- * Default Variations ON: Control
- * Default Variations OFF: Control
-2. Enable feature flag `id-experiments-at-edge-client-side`
- * Split the traffic 1/3 for each variation
-3. Create an experiment metric named `click-button-key`
- * Event kind: custom
-4. Create an experiment
- * Name: Click driver
- * Hypothesis: High contrast drives clicks
- * Metric: `click-button-key`
- * Flag Variations: `id-experiments-at-edge-client-side`
- * Audience: 40% A; 40%B; 20%Control
+Just follow your dreams, anything goes.
 
 ### 3. Install dependencies
 ```
-   cd website-distribution
+   cd lambda-url-distribution
    npm i
 ```
 
-### 4. Create the website and the CloudFront distribution
+### 4. Create the lambda URL and the CloudFront distribution
 
 ```
    sls deploy
@@ -65,9 +48,9 @@ Browse to the [AWS CloudFront Distributions page](https://us-east-1.console.aws.
 
 Open the `Domain name` from the step above with your favourite browser.
 
-**If you see a "green" page, written "Default Version", things are working so far.**
+**If you see "hello world" and no feature flags, things are working so far**
 
-### 7. Prepare the lambdas that control the experiment
+### 7. Prepare the lambdas that enrich the feature flags
 
 ```
 cd ...
@@ -91,6 +74,4 @@ Search for `YOUR_CLOUDFRONT_DISTRIBUTION_ID_GOES_HERE`, and replace by the `ID` 
 
 ### 10. Final test
 
-Reload the same page opened on step `6`, you should now see a `Blue` or `Red` (or even `Green`) variations of the page, dependent on your LaunchDarkly rollout configuration.
-
-Also notice on cookies, you should see your unique customer identifier set on `cookie-exp-edge`.
+Reload the same page opened on step `6`, you should now see all the feature flags now listed. This demonstrates how we can compose feature flag gathering outside of your codebase, and simply use them as an always readilly availalbe tool.

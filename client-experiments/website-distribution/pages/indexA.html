@@ -1,44 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  body {
-    background-color: blue;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: blue;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      text-align: center;
+    }
 
-  .moving-text {
-    font-size: 4rem;
-    font-family: sans-serif;
-    color: white;
-    animation: moveText 3s ease-in-out infinite;
-  }
+    .moving-text {
+      font-size: 4rem;
+      font-family: sans-serif;
+      color: white;
+      animation: moveText 3s ease-in-out infinite;
+    }
 
-  @keyframes moveText {
-    0%, 100% {
-      transform: translate(0, 0);
+    @keyframes moveText {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      25% {
+        transform: translate(-20px, 20px);
+      }
+
+      50% {
+        transform: translate(0, 40px);
+      }
+
+      75% {
+        transform: translate(20px, 20px);
+      }
     }
-    25% {
-      transform: translate(-20px, 20px);
+
+    #customMetricButton {
+      background-color: #3498db;
+      color: white;
+      font-size: 1.5rem;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
     }
-    50% {
-      transform: translate(0, 40px);
+
+    #customMetricButton:hover {
+      background-color: #2980b9;
     }
-    75% {
-      transform: translate(20px, 20px);
-    }
-  }
-</style>
-<title>Version A</title>
+  </style>
+  <title>Version A</title>
+  <script src="https://unpkg.com/launchdarkly-js-client-sdk@3"></script>
 </head>
+
 <body>
-    <div class="moving-text">Version A</div>
+  <div class="moving-text">Version A<br />
+    <button id="customMetricButton">Will you click me?</button>
+  </div>
+
+  <script>
+    // Function to get the value of a cookie by name
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].split('=');
+        if (cookie[0] === name) {
+          return cookie[1];
+        }
+      }
+      return null;
+    }
+
+    // Get the user key from the "cookie-exp-edge" cookie, defined on /lambda-at-edge/src/constants.ts
+    const userKey = getCookie('cookie-exp-edge');
+
+    // Initialize LaunchDarkly client with the user key and user information
+    const user = { key: userKey || 'default-user-key' }; // Use a default key if the cookie is not found
+    const ldClient = LDClient.initialize('LD_CLIENT_SIDE_ID_GOES_HERE', user);
+
+    // Function to trigger a custom metric
+    const triggerCustomMetric = () => {
+      ldClient.track('click-button-key', user);
+      alert("You did, didn't you?");
+    };
+
+    // Add an event listener to the button to trigger the custom metric
+    document.getElementById('customMetricButton').addEventListener('click', triggerCustomMetric);
+  </script>
 </body>
+</body>
+
 </html>

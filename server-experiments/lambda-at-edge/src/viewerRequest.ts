@@ -9,7 +9,7 @@ import {
 
 import { init as LDInit } from '@launchdarkly/node-server-sdk';
 
-const client = LDInit('YOUR_LAUNCH_DARKLY_API_KEY_GOES_HERE');
+const client = LDInit('LD_SERVER_SDK_KEY_GOES_HERE');
 // Environment Variables restricted for Lambda@Edge
 // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/edge-functions-restrictions.html
 
@@ -37,14 +37,8 @@ export const handler: CloudFrontRequestHandler = (
             for (const flagName of Object.keys(flagsState.allValues())) {
                 const flagValue = flagsState.getFlagValue(flagName);
                 
-                // Flushing out multivariate flags
-                // Also, adding a Max amount of feature flags
-                // In a real world scenario we would filter only the feature flags associated to the service
-                if (flagName.startsWith('is') && count < 200) {
-                    console.log(`Flag whitelisted: ${flagName}: ${flagValue}`);
-                    enabledFlags[flagName] = flagValue;
-                    count++
-                }
+                console.log(`Flag whitelisted: ${flagName}: ${flagValue}`);
+                enabledFlags[flagName] = flagValue;
             }
 
             headers[`flags`] = [{

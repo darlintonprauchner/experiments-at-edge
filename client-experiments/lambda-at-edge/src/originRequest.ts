@@ -27,11 +27,13 @@ export const handler: CloudFrontRequestHandler = (
     if (headerValue) {
         // If there is an experiment assigned by viewerRequest.ts, then we use it to change the URI
         const experiment = JSON.parse(headerValue);
-        const newURI = `/index${experiment.experimentVariation}.html`;
+        if (experiment.variation !== 'Control') {
+            const newURI = `/index${experiment.variation}.html`;
 
-        console.log(`Requested URL: ${request.uri}`);
-        request.uri = newURI;
-        console.log(`Assigned URL: ${request.uri}`);
+            console.log(`Requested URL: ${request.uri}`);
+            request.uri = newURI;
+            console.log(`Assigned URL: ${request.uri}`);
+        }
     }
     
     callback(null, request);

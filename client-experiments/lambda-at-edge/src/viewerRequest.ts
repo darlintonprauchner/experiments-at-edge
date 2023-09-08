@@ -20,7 +20,7 @@ import { COOKIE_KEY, HEADER_KEY } from './constants';
     We are using a cookie to keep this persistence.
 */
 
-const client = LDInit('YOUR_LAUNCH_DARKLY_API_KEY_GOES_HERE');
+const client = LDInit('LD_SERVER_SDK_KEY_GOES_HERE');
 // Environment Variables restricted for Lambda@Edge
 // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/edge-functions-restrictions.html
 
@@ -50,16 +50,17 @@ export const handler: CloudFrontRequestHandler = (
         headers.cookie.push({ key: 'Cookie', value: cookie });
     }
 
+    // In a real world scenario, the block bellow sets a cookie with the variation assigned, with a TTL
+    // This will make it so it runs only once, for optimal performance
+    // I'm not doing it here, so that I can increase/decrease it on the fly for demo purposes
     client.waitForInitialization().then(() => {
         console.log('Initiated LaunchDarkly');
 
-        client.variation('id-experiments-at-edge', { key: uniqueCustomerIdentifier }, false, (_, variation) => {
+        client.variation('id-experiments-at-edge-client-side', { key: uniqueCustomerIdentifier }, false, (_, variation) => {
             console.log(`Variation assigned: ${variation}`);
-            const experimentVariation = variation ? 'A' : 'B';
-            console.log(`Experiment assigned: ${experimentVariation}`);
             
             // Header will be consumed on originRequest.ts
-            const headerValue = JSON.stringify({ experimentVariation });
+            const headerValue = JSON.stringify({ variation });
             headers[HEADER_KEY] = [{
                 key: HEADER_KEY,
                 value: headerValue
